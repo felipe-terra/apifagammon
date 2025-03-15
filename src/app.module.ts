@@ -7,12 +7,14 @@ import { UsersModule } from './users/users.module';
 import { GlobalModule } from './global.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { PlacesModule } from './places/places.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
+    PlacesModule,
     GlobalModule,
     AuthModule,
   ],
