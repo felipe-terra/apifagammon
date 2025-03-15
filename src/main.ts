@@ -10,6 +10,17 @@ async function bootstrap() {
     .setTitle('Agendamentos API')
     .setDescription('Em desenvolvimento')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT',
+    )
     .build();
 
   app.useGlobalPipes(new ValidationPipe());
