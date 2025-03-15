@@ -2,7 +2,7 @@ import { Entity } from 'src/core/repository/generic.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { EUserType } from './euser-type';
 import * as bcrypt from 'bcrypt';
-import { HttpException } from '@nestjs/common';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 export class User implements Entity {
   id: number;
@@ -19,10 +19,6 @@ export class User implements Entity {
   }
 
   static newUser(data: CreateUserDto): User {
-    if (!data.password) {
-      throw new HttpException('Password is required', 400);
-    }
-
     const input: Partial<User> = {
       name: data.name,
       email: data.email,
@@ -36,7 +32,7 @@ export class User implements Entity {
     return user;
   }
 
-  static newUserWithId(id: number, data: CreateUserDto): User {
+  static newUserWithId(id: number, data: UpdateUserDto): User {
     if (data.password) {
       data.password = bcrypt.hashSync(data.password, 8);
     }

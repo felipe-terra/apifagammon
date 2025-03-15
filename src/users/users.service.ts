@@ -2,6 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { User } from './entity/users';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repository/user.repository';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +26,7 @@ export class UsersService {
     return (await this.userRepository.findAll()).map((user) => user.toJSON());
   }
 
-  async update(id: number, userDto: CreateUserDto) {
+  async update(id: number, userDto: UpdateUserDto) {
     if (await this.userRepository.emailAlreadyExists(userDto.email, id)) {
       throw new HttpException('Email already exists', 400);
     }

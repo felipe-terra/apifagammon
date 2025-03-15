@@ -7,6 +7,7 @@ export interface Entity {
 
 export abstract class GenericRepository<T extends Entity> {
   abstract entityName: string;
+  relations: string[];
   constructor(public repository: Repository<T>) {}
 
   async create(item: T): Promise<T> {
@@ -23,6 +24,7 @@ export abstract class GenericRepository<T extends Entity> {
       where: {
         id,
       } as FindOptionsWhere<T>,
+      relations: this.relations,
       loadEagerRelations: true,
     });
 

@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -9,7 +10,7 @@ import {
 import { EUserType } from '../entity/euser-type';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class UpdateUserDto {
   @ApiProperty({
     example: 'John Doe',
   })
@@ -28,7 +29,7 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'password123',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(100)
   @MinLength(6)
   @IsString()

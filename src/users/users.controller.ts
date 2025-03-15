@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt-strategy/jwt.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiBearerAuth('JWT')
 @UseGuards(JwtGuard)
@@ -36,7 +37,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  async Update(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
+  async Update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 

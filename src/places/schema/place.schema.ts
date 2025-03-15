@@ -21,4 +21,12 @@ export const PlaceSchema = new EntitySchema<Place>({
       nullable: false,
     },
   },
+  relations: {
+    place_configurations: {
+      type: 'one-to-many',
+      target: 'place_configurations',
+      inverseSide: 'place',
+      cascade: ['insert', 'update'],
+    },
+  },
 });
