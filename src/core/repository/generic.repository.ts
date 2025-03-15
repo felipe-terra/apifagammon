@@ -1,5 +1,5 @@
 import { HttpException } from '@nestjs/common';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 
 export interface Entity {
   id: number;
@@ -16,7 +16,11 @@ export abstract class GenericRepository<T extends Entity> {
   }
 
   async findAll(): Promise<T[]> {
-    return this.repository.find();
+    return this.repository.find({
+      order: {
+        id: 'ASC',
+      } as FindOptionsOrder<T>,
+    });
   }
 
   async findById(id: number): Promise<T> {

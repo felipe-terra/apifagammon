@@ -3,6 +3,7 @@ import { User } from './entity/users';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repository/user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { EUserType } from './entity/euser-type';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,10 @@ export class UsersService {
   }
 
   async delete(id: number) {
-    await this.userRepository.softDelete(id);
+    await this.userRepository.delete(id);
+  }
+
+  getPermissions(userType: EUserType) {
+    return User.getPermissions(userType);
   }
 }

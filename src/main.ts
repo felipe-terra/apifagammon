@@ -24,6 +24,7 @@ async function bootstrap() {
     .build();
 
   app.useGlobalPipes(new ValidationPipe());
+  app.enableCors();
 
   const customOptions: ExpressSwaggerCustomOptions = {
     customSiteTitle: 'Agendamentos API',

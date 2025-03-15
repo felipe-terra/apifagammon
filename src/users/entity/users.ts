@@ -12,7 +12,6 @@ export class User implements Entity {
   type: EUserType;
   active: boolean;
   created_at: Date;
-  deleted_at: Date;
 
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
@@ -46,6 +45,60 @@ export class User implements Entity {
     };
     const user = new User(input);
     return user;
+  }
+
+  static getPermissions(userType: EUserType) {
+    if (userType === EUserType.ADMIN) {
+      return [
+        {
+          name: 'Home',
+          screens: [
+            {
+              name: 'Home',
+              path: './home.html',
+              icon: 'ti ti-home',
+            },
+          ],
+        },
+        {
+          name: 'Cadastros',
+          screens: [
+            {
+              name: 'Ambientes',
+              path: './ambientes.html',
+              icon: 'ti ti-map-pins',
+            },
+            {
+              name: 'Usuários',
+              path: './usuarios.html',
+              icon: 'ti ti-users',
+            },
+          ],
+        },
+      ];
+    }
+    return [
+      {
+        name: 'Home',
+        screens: [
+          {
+            name: 'Home',
+            path: './home.html',
+            icon: 'ti ti-home',
+          },
+        ],
+      },
+      {
+        name: 'Agendamentos',
+        screens: [
+          {
+            name: 'Solicitar Agendamento',
+            path: './solicitar_agendamento.html',
+            icon: 'ti ti-map-pins',
+          },
+        ],
+      },
+    ];
   }
 
   toJSON() {
