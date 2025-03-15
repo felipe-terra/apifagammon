@@ -1,10 +1,12 @@
-import { FindOptionsWhere, Repository, EntityNotFoundError } from 'typeorm';
+import { HttpException } from '@nestjs/common';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 export interface Entity {
   id: number;
 }
 
-export class GenericRepository<T extends Entity> {
+export abstract class GenericRepository<T extends Entity> {
+  abstract entityName: string;
   constructor(public repository: Repository<T>) {}
 
   async create(item: T): Promise<T> {
@@ -25,7 +27,7 @@ export class GenericRepository<T extends Entity> {
     });
 
     if (!data) {
-      throw new EntityNotFoundError(this.repository.target as any, id);
+      throw new HttpException(`${this.entityName} not found`, 404);
     }
 
     return data;
@@ -35,26 +37,16 @@ export class GenericRepository<T extends Entity> {
     await this.findById(item.id);
     const data = await this.repository.preload(item);
 
-    if (!data) {
-      throw new EntityNotFoundError(this.repository.target as any, item.id);
-    }
-
     return this.repository.save(data);
   }
 
   async delete(id: number): Promise<void> {
-    const result = await this.repository.delete(id);
-
-    if (result.affected === 0) {
-      throw new EntityNotFoundError(this.repository.target as any, id);
-    }
+    await this.findById(id);
+    await this.repository.delete(id);
   }
 
   async softDelete(id: number): Promise<void> {
-    const result = await this.repository.softDelete(id);
-    if (result.affected === 0) {
-      throw new EntityNotFoundError(this.repository.target as any, id);
-    }
-    return;
+    await this.findById(id);
+    await this.repository.softDelete(id);
   }
 }

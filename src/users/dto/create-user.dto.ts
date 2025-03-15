@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -28,7 +29,7 @@ export class CreateUserDto {
   @ApiProperty({
     example: 'password123',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(100)
   @MinLength(6)
   @IsString()

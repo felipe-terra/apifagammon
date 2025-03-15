@@ -1,6 +1,8 @@
 import { Entity } from 'src/core/repository/generic.repository';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { EUserType } from './euser-type';
+import * as bcrypt from 'bcrypt';
+import { HttpException } from '@nestjs/common';
 
 export class User implements Entity {
   id: number;
@@ -17,10 +19,14 @@ export class User implements Entity {
   }
 
   static newUser(data: CreateUserDto): User {
+    if (!data.password) {
+      throw new HttpException('Password is required', 400);
+    }
+
     const input: Partial<User> = {
       name: data.name,
       email: data.email,
-      password: data.password,
+      password: bcrypt.hashSync(data.password, 8),
       type: data.type,
       active: data.active,
       created_at: new Date(),
@@ -31,6 +37,9 @@ export class User implements Entity {
   }
 
   static newUserWithId(id: number, data: CreateUserDto): User {
+    if (data.password) {
+      data.password = bcrypt.hashSync(data.password, 8);
+    }
     const input: Partial<User> = {
       id: id,
       name: data.name,
@@ -41,5 +50,15 @@ export class User implements Entity {
     };
     const user = new User(input);
     return user;
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      type: this.type,
+      active: this.active,
+    };
   }
 }

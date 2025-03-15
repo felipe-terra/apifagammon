@@ -28,16 +28,16 @@ export class UsersController {
 
   @Get(':id')
   async FindOne(@Param('id') id: number) {
-    return await this.usersService.findById(id);
+    return await this.usersService.findById(+id);
   }
 
   @Put(':id')
   async Update(@Param('id') id: number, @Body() updateUserDto: CreateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   async Remove(@Param('id') id: number) {
-    return this.usersService.delete(id);
+    return this.usersService.delete(+id);
   }
 }

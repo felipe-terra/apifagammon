@@ -9,23 +9,26 @@ export class UsersService {
 
   async create(userDto: CreateUserDto) {
     const user = User.newUser(userDto);
-    return await this.userRepository.create(user);
+    await this.userRepository.create(user);
+    return user.toJSON();
   }
 
   async findById(id: number) {
-    return await this.userRepository.findById(id);
+    const user = await this.userRepository.findById(id);
+    return user.toJSON();
   }
 
   async findAll() {
-    return await this.userRepository.findAll();
+    return (await this.userRepository.findAll()).map((user) => user.toJSON());
   }
 
   async update(id: number, userDto: CreateUserDto) {
     const user = User.newUserWithId(id, userDto);
-    return await this.userRepository.update(user);
+    await this.userRepository.update(user);
+    return user.toJSON();
   }
 
   async delete(id: number) {
-    return await this.userRepository.delete(id);
+    await this.userRepository.softDelete(id);
   }
 }

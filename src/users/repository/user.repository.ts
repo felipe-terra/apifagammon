@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class UserRepository extends GenericRepository<User> {
+  entityName: string = 'User';
+
   constructor(public repository: Repository<User>) {
     super(repository);
   }
