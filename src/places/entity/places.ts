@@ -30,10 +30,15 @@ export class Place implements Entity {
   }
 
   static newPlaceWithId(id: number, data: CreatePlaceDto): Place {
+    this.validatePlaceConfigurations(data.configurations);
+
     const input: Partial<Place> = {
       id: id,
       name: data.name,
       active: data.active,
+      place_configurations: this.createPlaceConfigurationsEntity(
+        data.configurations,
+      ),
     };
     const place = new Place(input);
     return place;
@@ -60,10 +65,19 @@ export class Place implements Entity {
       const configurations = groupedConfigurations[dayOfWeek];
       const orderedConfigurations = this.orderByStartTime(configurations);
       orderedConfigurations.map((configuration, index) => {
-        const placeConfiguration = PlaceConfiguration.newPlaceConfiguration(
-          configuration,
-          index + 1,
-        );
+        let placeConfiguration = null;
+        if (configuration.id) {
+          placeConfiguration = PlaceConfiguration.newPlaceConfigurationWithId(
+            configuration.id,
+            configuration,
+            index + 1,
+          );
+        } else {
+          placeConfiguration = PlaceConfiguration.newPlaceConfiguration(
+            configuration,
+            index + 1,
+          );
+        }
         placeConfigurations.push(placeConfiguration);
       });
     }

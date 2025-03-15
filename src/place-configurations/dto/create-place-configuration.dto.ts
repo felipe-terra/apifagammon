@@ -31,4 +31,6 @@ export class CreatePlaceConfigurationDto {
     example: true,
   })
   active: boolean;
+
+  id?: number;
 }

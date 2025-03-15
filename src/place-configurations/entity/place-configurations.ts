@@ -32,6 +32,23 @@ export class PlaceConfiguration implements Entity {
     return placeConfiguration;
   }
 
+  static newPlaceConfigurationWithId(
+    id: number,
+    data: CreatePlaceConfigurationDto,
+    order: number,
+  ): PlaceConfiguration {
+    const input: Partial<PlaceConfiguration> = {
+      id: id,
+      day_of_week: data.day_of_week,
+      start_time: data.start_time,
+      end_time: data.end_time,
+      order: order,
+      active: data.active,
+    };
+    const placeConfiguration = new PlaceConfiguration(input);
+    return placeConfiguration;
+  }
+
   toJSON() {
     return {
       id: this.id,

@@ -47,6 +47,7 @@ export const PlaceConfigurationsSchema = new EntitySchema<PlaceConfiguration>({
         name: 'id_place',
       },
       cascade: ['insert', 'update'],
+      orphanedRowAction: 'delete',
     },
   },
 });
