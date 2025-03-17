@@ -33,10 +33,6 @@ export const PlaceConfigurationsSchema = new EntitySchema<PlaceConfiguration>({
       type: 'int',
       nullable: false,
     },
-    active: {
-      type: 'boolean',
-      nullable: false,
-    },
   },
   relations: {
     place: {

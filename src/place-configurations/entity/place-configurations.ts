@@ -11,7 +11,6 @@ export class PlaceConfiguration implements Entity {
   start_time: string;
   end_time: string;
   order: number;
-  active: boolean;
 
   constructor(partial: Partial<PlaceConfiguration>) {
     Object.assign(this, partial);
@@ -26,7 +25,6 @@ export class PlaceConfiguration implements Entity {
       start_time: data.start_time,
       end_time: data.end_time,
       order: order,
-      active: data.active,
     };
     const placeConfiguration = new PlaceConfiguration(input);
     return placeConfiguration;
@@ -43,7 +41,6 @@ export class PlaceConfiguration implements Entity {
       start_time: data.start_time,
       end_time: data.end_time,
       order: order,
-      active: data.active,
     };
     const placeConfiguration = new PlaceConfiguration(input);
     return placeConfiguration;
@@ -53,10 +50,9 @@ export class PlaceConfiguration implements Entity {
     return {
       id: this.id,
       day_of_week: this.day_of_week,
-      start_time: this.start_time,
-      end_time: this.end_time,
+      start_time: this.start_time.slice(0, 5),
+      end_time: this.end_time.slice(0, 5),
       order: this.order,
-      active: this.active,
     };
   }
 }
