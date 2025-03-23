@@ -8,6 +8,7 @@ import { GlobalModule } from './global.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PlacesModule } from './places/places.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PlacesModule } from './places/places.module';
     PlacesModule,
     GlobalModule,
     AuthModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
