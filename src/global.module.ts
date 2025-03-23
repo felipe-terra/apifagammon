@@ -5,6 +5,8 @@ import { User } from './users/entity/users';
 import { getDataSourceToken } from '@nestjs/typeorm';
 import { PlaceRepository } from './places/repository/place.repository';
 import { Place } from './places/entity/places';
+import { ScheduleRepository } from './schedules/repository/schedules.repository';
+import { Schedule } from './schedules/entity/schedules';
 
 const repositoryProviders: Provider[] = [
   {
@@ -17,6 +19,12 @@ const repositoryProviders: Provider[] = [
     provide: PlaceRepository,
     useFactory: (dataSource: DataSource) =>
       new PlaceRepository(dataSource.getRepository(Place)),
+    inject: [getDataSourceToken()],
+  },
+  {
+    provide: ScheduleRepository,
+    useFactory: (dataSource: DataSource) =>
+      new ScheduleRepository(dataSource.getRepository(Schedule), dataSource),
     inject: [getDataSourceToken()],
   },
 ];
