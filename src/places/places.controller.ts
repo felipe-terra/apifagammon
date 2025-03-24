@@ -12,6 +12,7 @@ import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt-strategy/jwt.guard';
+import { EDayOfWeek } from 'src/place-configurations/entity/eday-of-week';
 
 @ApiBearerAuth('JWT')
 @UseGuards(JwtGuard)
@@ -28,6 +29,22 @@ export class PlacesController {
   @Get()
   async FindAll() {
     return await this.placesService.findAll();
+  }
+
+  @Get('combo/places')
+  async getCombo() {
+    return await this.placesService.getCombo();
+  }
+
+  @Get('combo/configurations/:id_place/:day_of_week')
+  async getComboConfigurations(
+    @Param('id_place') id_place: number,
+    @Param('day_of_week') day_of_week: EDayOfWeek,
+  ) {
+    return await this.placesService.getComboConfigurations(
+      id_place,
+      day_of_week,
+    );
   }
 
   @Get(':id')

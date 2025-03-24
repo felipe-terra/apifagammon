@@ -1,5 +1,6 @@
 import { EntitySchema } from 'typeorm';
 import { Schedule } from '../entity/schedules';
+import { EScheduleStatus } from '../entity/eschedule-status';
 
 export const SchedulesSchema = new EntitySchema<Schedule>({
   name: 'schedules',
@@ -20,22 +21,12 @@ export const SchedulesSchema = new EntitySchema<Schedule>({
       nullable: false,
     },
     date: {
-      type: 'timestamp',
+      type: 'date',
       nullable: false,
     },
     status: {
-      type: 'varchar',
-      length: 100,
-      nullable: false,
-    },
-    start: {
-      type: 'varchar',
-      length: 5,
-      nullable: false,
-    },
-    end: {
-      type: 'varchar',
-      length: 5,
+      type: 'enum',
+      enum: EScheduleStatus,
       nullable: false,
     },
     id_user_cancelled: {
@@ -53,7 +44,24 @@ export const SchedulesSchema = new EntitySchema<Schedule>({
     reason: {
       type: 'varchar',
       length: 255,
-      nullable: true,
+      nullable: false,
+    },
+  },
+  relations: {
+    user_requested: {
+      target: 'users',
+      type: 'many-to-one',
+      joinColumn: { name: 'id_user_requested' },
+    },
+    user_cancelled: {
+      target: 'users',
+      type: 'many-to-one',
+      joinColumn: { name: 'id_user_cancelled' },
+    },
+    place_configuration: {
+      target: 'place_configurations',
+      type: 'many-to-one',
+      joinColumn: { name: 'id_place_configuration' },
     },
   },
 });

@@ -9,4 +9,11 @@ export class PlaceRepository extends GenericRepository<Place> {
   constructor(public repository: Repository<Place>) {
     super(repository);
   }
+
+  async getCombo(): Promise<any> {
+    const sql =
+      'SELECT id as value, name as label FROM places WHERE active = true';
+    const result = await this.repository.query(sql);
+    return result;
+  }
 }

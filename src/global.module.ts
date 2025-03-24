@@ -7,6 +7,8 @@ import { PlaceRepository } from './places/repository/place.repository';
 import { Place } from './places/entity/places';
 import { ScheduleRepository } from './schedules/repository/schedules.repository';
 import { Schedule } from './schedules/entity/schedules';
+import { PlaceConfigurationRepository } from './place-configurations/repository/place-configuration.repository';
+import { PlaceConfiguration } from './place-configurations/entity/place-configurations';
 
 const repositoryProviders: Provider[] = [
   {
@@ -25,6 +27,14 @@ const repositoryProviders: Provider[] = [
     provide: ScheduleRepository,
     useFactory: (dataSource: DataSource) =>
       new ScheduleRepository(dataSource.getRepository(Schedule), dataSource),
+    inject: [getDataSourceToken()],
+  },
+  {
+    provide: PlaceConfigurationRepository,
+    useFactory: (dataSource: DataSource) =>
+      new PlaceConfigurationRepository(
+        dataSource.getRepository(PlaceConfiguration),
+      ),
     inject: [getDataSourceToken()],
   },
 ];

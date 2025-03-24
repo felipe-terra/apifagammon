@@ -1,15 +1,19 @@
 import { Entity } from 'src/core/repository/generic.repository';
 import { CreateSchedulesDto } from '../dto/create-schedules.dto';
+import { EScheduleStatus } from './eschedule-status';
+import { User } from 'src/users/entity/users';
+import { PlaceConfiguration } from 'src/place-configurations/entity/place-configurations';
 export class Schedule implements Entity {
   id: number;
   id_user_requested: number;
+  user_requested: User;
   id_place_configuration: number;
+  place_configuration: PlaceConfiguration;
   date: Date;
   created_at: Date;
-  status: string;
-  start: string;
-  end: string;
+  status: EScheduleStatus;
   id_user_cancelled: number;
+  user_cancelled: User;
   date_cancelled: Date;
   reason: string;
 
@@ -23,26 +27,25 @@ export class Schedule implements Entity {
       id_place_configuration: data.id_place_configuration,
       date: data.date,
       created_at: new Date(),
-      start: data.start,
-      end: data.end,
-      status: 'Aprovado',
+      status: EScheduleStatus.AGENDADO,
+      reason: data.reason,
     };
     const schedule = new Schedule(input);
     return schedule;
   }
 
-  static cancelSchedule(data: CreateSchedulesDto): Schedule { //Mudar a logica do cancelamento depois qdo for entregar pra ele.
+  static cancelSchedule(data: CreateSchedulesDto): Schedule {
+    //Mudar a logica do cancelamento depois qdo for entregar pra ele.
     const input: Partial<Schedule> = {
-      id_user_cancelled: data.id_user_cancelled,
+      //id_user_cancelled: data.id_user_cancelled,
       date_cancelled: new Date(),
-      status: 'Cancelado',
+      status: EScheduleStatus.CANCELADO,
       reason: data.reason,
     };
 
     const schedule = new Schedule(input);
     return schedule;
   }
-
 
   toJSON() {
     return {
@@ -52,8 +55,6 @@ export class Schedule implements Entity {
       date: this.date,
       status: this.status,
       reason: this.reason,
-      start: this.start,
-      end: this.end,
       //esses aqui estão como nulos pq só vão ser preenchidos se realmente houver cancelamento
       id_user_cancelled: this.id_user_cancelled ?? null,
       date_cancelled: this.date_cancelled ?? null,

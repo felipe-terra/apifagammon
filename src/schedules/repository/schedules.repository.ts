@@ -9,14 +9,12 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
   entityName: string = 'Schedule';
   constructor(
     public repository: Repository<Schedule>,
-    private dataSource: DataSource
+    private dataSource: DataSource,
   ) {
     super(repository);
   }
 
-
   //TODO: Criar uma função pra verificar se o ambiente está disponível no horário escolhido.
-
 
   async findAllWithDetails() {
     // Função pra mostrar todos os agendamentos pro frontend.
@@ -32,8 +30,8 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
       JOIN 
         places p ON pc.id_place = p.id
     `);
-    
-    return schedulesWithDetails.map(item => ({
+
+    return schedulesWithDetails.map((item) => ({
       id: item.id,
       id_user_requested: item.id_user_requested,
       date: item.date,
@@ -47,7 +45,7 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
       place: {
         id: item.place_id,
         name: item.place_name,
-        active: item.place_active
+        active: item.place_active,
       },
       placeConfiguration: {
         id: item.config_id,
@@ -56,8 +54,8 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
         start_time: item.start_time,
         end_time: item.end_time,
         order: item.order,
-        active: item.config_active
-      }
+        active: item.config_active,
+      },
     }));
   }
 }
