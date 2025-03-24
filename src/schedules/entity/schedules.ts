@@ -50,14 +50,10 @@ export class Schedule implements Entity {
   toJSON() {
     return {
       id: this.id,
-      id_user_requested: this.id_user_requested,
-      id_place_configuration: this.id_place_configuration,
       date: this.date,
       status: this.status,
       reason: this.reason,
-      //esses aqui estão como nulos pq só vão ser preenchidos se realmente houver cancelamento
-      id_user_cancelled: this.id_user_cancelled ?? null,
-      date_cancelled: this.date_cancelled ?? null,
+      place_configuration: this.place_configuration?.toJSON(),
     };
   }
 }

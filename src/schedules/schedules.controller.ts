@@ -24,7 +24,7 @@ export class SchedulesController {
   }
 
   @Get()
-  async findAll() {
-    return this.schedulesService.findAll();
+  async findAll(@Req() request: any) {
+    return this.schedulesService.findAll(request.user.sub);
   }
 }

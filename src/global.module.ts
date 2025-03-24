@@ -26,7 +26,7 @@ const repositoryProviders: Provider[] = [
   {
     provide: ScheduleRepository,
     useFactory: (dataSource: DataSource) =>
-      new ScheduleRepository(dataSource.getRepository(Schedule), dataSource),
+      new ScheduleRepository(dataSource.getRepository(Schedule)),
     inject: [getDataSourceToken()],
   },
   {

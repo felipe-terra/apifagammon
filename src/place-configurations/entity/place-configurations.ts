@@ -53,6 +53,7 @@ export class PlaceConfiguration implements Entity {
       start_time: this.start_time.slice(0, 5),
       end_time: this.end_time.slice(0, 5),
       order: this.order,
+      place: this.place?.toJSON(),
     };
   }
 }
