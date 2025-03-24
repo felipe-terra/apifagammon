@@ -92,8 +92,8 @@ export class User implements Entity {
         name: 'Agendamentos',
         screens: [
           {
-            name: 'Solicitar Agendamento',
-            path: './solicitar_agendamento.html',
+            name: 'Agendamento',
+            path: './agendamento.html',
             icon: 'ti ti-map-pins',
           },
         ],
