@@ -21,7 +21,7 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
   async findAllByUser(userId: number): Promise<Schedule[]> {
     return this.repository.find({
       order: {
-        id: 'ASC',
+        created_at: 'DESC',
       } as FindOptionsOrder<Schedule>,
       where: {
         id_user_requested: userId,
