@@ -2,7 +2,7 @@ import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { EDayOfWeek } from '../entity/eday-of-week';
 import { IsTimeFormat } from 'src/core/validators/is-time-format';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEndTimeAfterStartTime } from 'src/core/validators/is-end-time-after-start-time';
+import { IsStartTimeBeforeEndTime } from 'src/core/validators/is-end-time-after-start-time';
 
 export class CreatePlaceConfigurationDto {
   @IsNotEmpty()
@@ -15,6 +15,9 @@ export class CreatePlaceConfigurationDto {
   @IsString()
   @MaxLength(5)
   @IsTimeFormat()
+  @IsStartTimeBeforeEndTime('end_time', {
+    message: 'start_time deve ser menor que end_time',
+  })
   @ApiProperty({
     example: '08:00',
   })
@@ -26,7 +29,6 @@ export class CreatePlaceConfigurationDto {
   @ApiProperty({
     example: '08:00',
   })
-  @IsEndTimeAfterStartTime()
   end_time: string;
 
   id?: number;

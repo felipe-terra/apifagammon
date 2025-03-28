@@ -11,7 +11,12 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
     super(repository);
   }
 
-  //TODO: Criar uma função pra verificar se o ambiente está disponível no horário escolhido.
+  async alreadyScheduled(id: number, date: string): Promise<boolean> {
+    const sql = 'SELECT COUNT(*) FROM schedules s WHERE id_place_configuration = $1 AND date = $2';
+    const result = await this.repository.query(sql, [id, date]);
+
+    return result[0].count > 0;
+  }
 
   async findAllByUser(userId: number): Promise<Schedule[]> {
     return this.repository.find({

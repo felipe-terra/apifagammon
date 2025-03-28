@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateSchedulesDto } from './dto/create-schedules.dto';
 import { Schedule } from './entity/schedules';
 import { ScheduleRepository } from './repository/schedules.repository';
@@ -12,9 +12,23 @@ export class SchedulesService {
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto) {
-    await this.placeConfigurationsRepository.findById(
+    const alreadyScheduled = await this.schedulesRepository.alreadyScheduled(
+      scheduleDto.id_place_configuration,
+      scheduleDto.date.toString(),
+    );
+    if (alreadyScheduled) {
+      throw new HttpException('Já existe um agendamento para este horário', 400);
+    }
+
+    const placeConfigurations = await this.placeConfigurationsRepository.findById(
       scheduleDto.id_place_configuration,
     );
+    const now = new Date();
+    const scheduleDate = new Date(scheduleDto.date + ' ' + placeConfigurations.start_time);
+    if (scheduleDate < now) {
+      throw new HttpException('A data do agendamento deve ser maior que a data atual', 400);
+    }
+
     const schedule = Schedule.newSchedule(scheduleDto);
     await this.schedulesRepository.create(schedule);
     return schedule.toJSON();

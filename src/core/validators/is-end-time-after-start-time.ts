@@ -6,31 +6,45 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-@ValidatorConstraint({ name: 'isEndTimeAfterStartTime', async: false })
-export class IsEndTimeAfterStartTimeConstraint
+@ValidatorConstraint({ name: 'isStartTimeBeforeEndTime', async: false })
+export class IsStartTimeBeforeEndTimeConstraint
   implements ValidatorConstraintInterface
 {
-  validate(value: any, args: ValidationArguments): boolean {
-    const relatedPropertyName = args.constraints[0];
-    const startTime = (args.object as any)[relatedPropertyName];
-    if (!startTime || !value) return false;
-    return new Date(value) > new Date(startTime);
+  validate(startTime: string, args: ValidationArguments) {
+    const object = args.object as any;
+    const endTime = object[args.constraints[0]];
+
+    if (!startTime || !endTime) return false;
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const startDate = new Date();
+    startDate.setHours(startHour, startMinute, 0);
+
+    const endDate = new Date();
+    endDate.setHours(endHour, endMinute, 0);
+
+    return startDate < endDate;
   }
 
-  defaultMessage(args: ValidationArguments): string {
-    return `${args.property} must be greater than ${args.constraints[0]}`;
+  defaultMessage(args: ValidationArguments) {
+    return `O campo "${args.property}" deve ser menor que "${args.constraints[0]}"`;
   }
 }
 
-export function IsEndTimeAfterStartTime(validationOptions?: ValidationOptions) {
+export function IsStartTimeBeforeEndTime(
+  endTimeField: string,
+  validationOptions?: ValidationOptions,
+) {
   // eslint-disable-next-line @typescript-eslint/ban-types
   return function (object: Object, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      constraints: ['start_time'],
-      validator: IsEndTimeAfterStartTimeConstraint,
+      constraints: [endTimeField],
+      validator: IsStartTimeBeforeEndTimeConstraint,
     });
   };
 }
