@@ -3,12 +3,15 @@ import { CreateSchedulesDto } from './dto/create-schedules.dto';
 import { Schedule } from './entity/schedules';
 import { ScheduleRepository } from './repository/schedules.repository';
 import { PlaceConfigurationRepository } from 'src/place-configurations/repository/place-configuration.repository';
+import { UserRepository } from 'src/users/repository/user.repository';
+import { EUserType } from 'src/users/entity/euser-type';
 
 @Injectable()
 export class SchedulesService {
   constructor(
     private readonly schedulesRepository: ScheduleRepository,
     private readonly placeConfigurationsRepository: PlaceConfigurationRepository,
+    private readonly userRepository: UserRepository,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto) {
@@ -34,11 +37,19 @@ export class SchedulesService {
     return schedule.toJSON();
   }
 
-  //TODO: Fazer a parte do cancelamento depois
-  async cancel(scheduleDto: CreateSchedulesDto) {
-    const schedule = Schedule.cancelSchedule(scheduleDto);
+  async cancel(id_schedule: number, id_user_cancelled: number) {
+    const schedule = await this.schedulesRepository.findById(id_schedule);
+    const user = await this.userRepository.findById(id_user_cancelled);
+    if (schedule.date_cancelled) return true;
+
+    if (schedule.id_user_requested !== id_user_cancelled && user.type !== EUserType.ADMIN) {
+      throw new HttpException('Você não tem permissão para cancelar este agendamento', 403);
+    }
+
+    schedule.cancel(id_user_cancelled);
     await this.schedulesRepository.update(schedule);
-    return schedule.toJSON();
+
+    return true;
   }
 
   async findAll(userId: number) {

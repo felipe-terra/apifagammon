@@ -12,7 +12,8 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
   }
 
   async alreadyScheduled(id: number, date: string): Promise<boolean> {
-    const sql = 'SELECT COUNT(*) FROM schedules s WHERE id_place_configuration = $1 AND date = $2';
+    const sql =
+      'SELECT COUNT(*) FROM schedules s WHERE id_place_configuration = $1 AND date = $2 AND date_cancelled IS NULL';
     const result = await this.repository.query(sql, [id, date]);
 
     return result[0].count > 0;

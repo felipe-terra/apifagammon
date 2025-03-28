@@ -2,7 +2,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt-strategy/jwt.guard';
 import { CreateSchedulesDto } from './dto/create-schedules.dto';
 import { SchedulesService } from './schedules.service';
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth('JWT')
@@ -18,9 +18,9 @@ export class SchedulesController {
     return this.schedulesService.create(scheduleDto);
   }
 
-  @Post('cancel')
-  async cancel(@Body() scheduleDto: CreateSchedulesDto) {
-    return this.schedulesService.cancel(scheduleDto);
+  @Patch('cancel/:id')
+  async cancel(@Param('id') id: number, @Req() request: any) {
+    return this.schedulesService.cancel(id, request.user.sub);
   }
 
   @Get()

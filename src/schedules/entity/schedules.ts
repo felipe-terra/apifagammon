@@ -34,17 +34,10 @@ export class Schedule implements Entity {
     return schedule;
   }
 
-  static cancelSchedule(data: CreateSchedulesDto): Schedule {
-    //Mudar a logica do cancelamento depois qdo for entregar pra ele.
-    const input: Partial<Schedule> = {
-      //id_user_cancelled: data.id_user_cancelled,
-      date_cancelled: new Date(),
-      status: EScheduleStatus.CANCELADO,
-      reason: data.reason,
-    };
-
-    const schedule = new Schedule(input);
-    return schedule;
+  cancel(id_user_cancelled: number) {
+    this.status = EScheduleStatus.CANCELADO;
+    this.date_cancelled = new Date();
+    this.id_user_cancelled = id_user_cancelled;
   }
 
   toJSON() {
