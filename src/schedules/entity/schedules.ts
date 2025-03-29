@@ -60,4 +60,13 @@ export class Schedule implements Entity {
       user_requested: this.user_requested?.toJSON(),
     };
   }
+
+  toPublicJSON() {
+    return {
+      date: this.date,
+      reason: this.reason,
+      place_configuration: this.place_configuration?.toPublicJSON(),
+      user_requested: this.user_requested?.toPublicJSON(),
+    };
+  }
 }

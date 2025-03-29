@@ -61,4 +61,9 @@ export class SchedulesService {
     const data = await this.schedulesRepository.findAll();
     return data.map((item) => item.toAdminJSON());
   }
+
+  async findAllPublic() {
+    const data = await this.schedulesRepository.findAllPublic();
+    return data.map((item) => item.toPublicJSON());
+  }
 }

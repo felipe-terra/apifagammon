@@ -2,6 +2,7 @@ import { GenericRepository } from 'src/core/repository/generic.repository';
 import { FindOptionsOrder, Repository } from 'typeorm';
 import { Schedule } from '../entity/schedules';
 import { Injectable } from '@nestjs/common';
+import { EScheduleStatus } from '../entity/eschedule-status';
 
 @Injectable()
 export class ScheduleRepository extends GenericRepository<Schedule> {
@@ -34,6 +35,17 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
       },
       relations: this.relations,
       loadEagerRelations: true,
+    });
+  }
+
+  async findAllPublic(): Promise<Schedule[]> {
+    return this.repository.find({
+      order: this.order,
+      relations: this.relations,
+      loadEagerRelations: this.relationEager,
+      where: {
+        status: EScheduleStatus.AGENDADO,
+      },
     });
   }
 }

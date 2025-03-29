@@ -20,9 +20,7 @@ export class Place implements Entity {
     const input: Partial<Place> = {
       name: data.name,
       active: data.active,
-      place_configurations: this.createPlaceConfigurationsEntity(
-        data.configurations,
-      ),
+      place_configurations: this.createPlaceConfigurationsEntity(data.configurations),
     };
 
     const place = new Place(input);
@@ -36,9 +34,7 @@ export class Place implements Entity {
       id: id,
       name: data.name,
       active: data.active,
-      place_configurations: this.createPlaceConfigurationsEntity(
-        data.configurations,
-      ),
+      place_configurations: this.createPlaceConfigurationsEntity(data.configurations),
     };
     const place = new Place(input);
     return place;
@@ -49,16 +45,17 @@ export class Place implements Entity {
       id: this.id,
       name: this.name,
       active: this.active,
-      configurations:
-        this.place_configurations?.map((configuration) =>
-          configuration.toJSON(),
-        ) ?? [],
+      configurations: this.place_configurations?.map((configuration) => configuration.toJSON()) ?? [],
     };
   }
 
-  private static createPlaceConfigurationsEntity(
-    configurations: CreatePlaceConfigurationDto[],
-  ) {
+  toPublicJSON() {
+    return {
+      name: this.name,
+    };
+  }
+
+  private static createPlaceConfigurationsEntity(configurations: CreatePlaceConfigurationDto[]) {
     const placeConfigurations: PlaceConfiguration[] = [];
     const groupedConfigurations = this.groupPlaceConfiguratios(configurations);
     for (const dayOfWeek in groupedConfigurations) {
@@ -73,10 +70,7 @@ export class Place implements Entity {
             index + 1,
           );
         } else {
-          placeConfiguration = PlaceConfiguration.newPlaceConfiguration(
-            configuration,
-            index + 1,
-          );
+          placeConfiguration = PlaceConfiguration.newPlaceConfiguration(configuration, index + 1);
         }
         placeConfigurations.push(placeConfiguration);
       });
@@ -85,9 +79,7 @@ export class Place implements Entity {
     return placeConfigurations;
   }
 
-  private static groupPlaceConfiguratios(
-    configurations: CreatePlaceConfigurationDto[],
-  ) {
+  private static groupPlaceConfiguratios(configurations: CreatePlaceConfigurationDto[]) {
     return configurations.reduce((acc, configuration) => {
       const dayOfWeek = configuration.day_of_week;
       if (!acc[dayOfWeek]) {
@@ -98,9 +90,7 @@ export class Place implements Entity {
     }, {});
   }
 
-  private static orderByStartTime(
-    configurations: CreatePlaceConfigurationDto[],
-  ) {
+  private static orderByStartTime(configurations: CreatePlaceConfigurationDto[]) {
     return configurations.sort((a, b) => {
       const startTimeA = a.start_time;
       const startTimeB = b.start_time;
@@ -108,9 +98,7 @@ export class Place implements Entity {
     });
   }
 
-  private static validatePlaceConfigurations(
-    configurations: CreatePlaceConfigurationDto[],
-  ) {
+  private static validatePlaceConfigurations(configurations: CreatePlaceConfigurationDto[]) {
     const groupedConfigurations = this.groupPlaceConfiguratios(configurations);
     for (const dayOfWeek of Object.keys(groupedConfigurations)) {
       const configurations = groupedConfigurations[dayOfWeek];
@@ -119,10 +107,7 @@ export class Place implements Entity {
         const current = orderedConfigurations[i];
         const next = orderedConfigurations[i + 1];
         if (current.end_time > next.start_time) {
-          throw new HttpException(
-            `Conflict in configurations for day of week ${dayOfWeek}`,
-            400,
-          );
+          throw new HttpException(`Conflict in configurations for day of week ${dayOfWeek}`, 400);
         }
       }
     }

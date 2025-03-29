@@ -16,10 +16,7 @@ export class PlaceConfiguration implements Entity {
     Object.assign(this, partial);
   }
 
-  static newPlaceConfiguration(
-    data: CreatePlaceConfigurationDto,
-    order: number,
-  ): PlaceConfiguration {
+  static newPlaceConfiguration(data: CreatePlaceConfigurationDto, order: number): PlaceConfiguration {
     const input: Partial<PlaceConfiguration> = {
       day_of_week: data.day_of_week,
       start_time: data.start_time,
@@ -54,6 +51,14 @@ export class PlaceConfiguration implements Entity {
       end_time: this.end_time.slice(0, 5),
       order: this.order,
       place: this.place?.toJSON(),
+    };
+  }
+
+  toPublicJSON() {
+    return {
+      start_time: this.start_time.slice(0, 5),
+      end_time: this.end_time.slice(0, 5),
+      place: this.place?.toPublicJSON(),
     };
   }
 }

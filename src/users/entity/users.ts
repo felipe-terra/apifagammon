@@ -120,4 +120,10 @@ export class User implements Entity {
       active: this.active,
     };
   }
+
+  toPublicJSON() {
+    return {
+      name: this.name,
+    };
+  }
 }
