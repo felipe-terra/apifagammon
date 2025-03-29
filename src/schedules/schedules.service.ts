@@ -52,8 +52,13 @@ export class SchedulesService {
     return true;
   }
 
-  async findAll(userId: number) {
+  async findAllByUser(userId: number) {
     const data = await this.schedulesRepository.findAllByUser(userId);
     return data.map((item) => item.toJSON());
+  }
+
+  async findAll() {
+    const data = await this.schedulesRepository.findAll();
+    return data.map((item) => item.toAdminJSON());
   }
 }

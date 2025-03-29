@@ -49,4 +49,15 @@ export class Schedule implements Entity {
       place_configuration: this.place_configuration?.toJSON(),
     };
   }
+
+  toAdminJSON() {
+    return {
+      id: this.id,
+      date: this.date,
+      status: this.status,
+      reason: this.reason,
+      place_configuration: this.place_configuration?.toJSON(),
+      user_requested: this.user_requested?.toJSON(),
+    };
+  }
 }

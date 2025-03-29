@@ -8,6 +8,10 @@ export interface Entity {
 export abstract class GenericRepository<T extends Entity> {
   abstract entityName: string;
   relations: string[];
+  relationEager: boolean = false;
+  order: FindOptionsOrder<T> = {
+    id: 'ASC',
+  } as FindOptionsOrder<T>;
   constructor(public repository: Repository<T>) {}
 
   async create(item: T): Promise<T> {
@@ -17,9 +21,9 @@ export abstract class GenericRepository<T extends Entity> {
 
   async findAll(): Promise<T[]> {
     return this.repository.find({
-      order: {
-        id: 'ASC',
-      } as FindOptionsOrder<T>,
+      order: this.order,
+      relations: this.relations,
+      loadEagerRelations: this.relationEager,
     });
   }
 

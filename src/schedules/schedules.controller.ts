@@ -23,8 +23,13 @@ export class SchedulesController {
     return this.schedulesService.cancel(id, request.user.sub);
   }
 
+  @Get('by-user')
+  async findAllByUser(@Req() request: any) {
+    return this.schedulesService.findAllByUser(request.user.sub);
+  }
+
   @Get()
-  async findAll(@Req() request: any) {
-    return this.schedulesService.findAll(request.user.sub);
+  async findAll() {
+    return this.schedulesService.findAll();
   }
 }

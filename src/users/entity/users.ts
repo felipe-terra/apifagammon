@@ -75,6 +75,16 @@ export class User implements Entity {
             },
           ],
         },
+        {
+          name: 'Agendamentos',
+          screens: [
+            {
+              name: 'Agendamento',
+              path: './visualizar_agendamentos.html',
+              icon: 'ti ti-map-pins',
+            },
+          ],
+        },
       ];
     }
     return [

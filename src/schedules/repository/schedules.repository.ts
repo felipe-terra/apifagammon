@@ -6,7 +6,12 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ScheduleRepository extends GenericRepository<Schedule> {
   entityName: string = 'Schedule';
-  relations: string[] = ['place_configuration', 'place_configuration.place'];
+  relations: string[] = ['place_configuration', 'place_configuration.place', 'user_requested'];
+  relationEager: boolean = true;
+  order: FindOptionsOrder<Schedule> = {
+    created_at: 'DESC',
+  };
+
   constructor(public repository: Repository<Schedule>) {
     super(repository);
   }
