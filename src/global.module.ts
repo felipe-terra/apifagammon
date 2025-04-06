@@ -9,33 +9,33 @@ import { ScheduleRepository } from './schedules/repository/schedules.repository'
 import { Schedule } from './schedules/entity/schedules';
 import { PlaceConfigurationRepository } from './place-configurations/repository/place-configuration.repository';
 import { PlaceConfiguration } from './place-configurations/entity/place-configurations';
+import { EmailSenderService } from './core/communication/email/email-sender.service';
 
 const repositoryProviders: Provider[] = [
   {
     provide: UserRepository,
-    useFactory: (dataSource: DataSource) =>
-      new UserRepository(dataSource.getRepository(User)),
+    useFactory: (dataSource: DataSource) => new UserRepository(dataSource.getRepository(User)),
     inject: [getDataSourceToken()],
   },
   {
     provide: PlaceRepository,
-    useFactory: (dataSource: DataSource) =>
-      new PlaceRepository(dataSource.getRepository(Place)),
+    useFactory: (dataSource: DataSource) => new PlaceRepository(dataSource.getRepository(Place)),
     inject: [getDataSourceToken()],
   },
   {
     provide: ScheduleRepository,
-    useFactory: (dataSource: DataSource) =>
-      new ScheduleRepository(dataSource.getRepository(Schedule)),
+    useFactory: (dataSource: DataSource) => new ScheduleRepository(dataSource.getRepository(Schedule)),
     inject: [getDataSourceToken()],
   },
   {
     provide: PlaceConfigurationRepository,
     useFactory: (dataSource: DataSource) =>
-      new PlaceConfigurationRepository(
-        dataSource.getRepository(PlaceConfiguration),
-      ),
+      new PlaceConfigurationRepository(dataSource.getRepository(PlaceConfiguration)),
     inject: [getDataSourceToken()],
+  },
+  {
+    provide: EmailSenderService,
+    useClass: EmailSenderService,
   },
 ];
 

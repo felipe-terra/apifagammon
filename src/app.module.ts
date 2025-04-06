@@ -9,10 +9,16 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { PlacesModule } from './places/places.module';
 import { SchedulesModule } from './schedules/schedules.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    MailerModule.forRoot({
+      transport: {
+        name: 'default',
+      },
+    }),
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     PlacesModule,

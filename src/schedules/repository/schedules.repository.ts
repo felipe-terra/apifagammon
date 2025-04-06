@@ -7,7 +7,12 @@ import { EScheduleStatus } from '../entity/eschedule-status';
 @Injectable()
 export class ScheduleRepository extends GenericRepository<Schedule> {
   entityName: string = 'Schedule';
-  relations: string[] = ['place_configuration', 'place_configuration.place', 'user_requested'];
+  relations: string[] = [
+    'place_configuration',
+    'place_configuration.place',
+    'user_requested',
+    'user_cancelled',
+  ];
   relationEager: boolean = true;
   order: FindOptionsOrder<Schedule> = {
     created_at: 'DESC',

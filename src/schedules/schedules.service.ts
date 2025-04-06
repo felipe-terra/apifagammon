@@ -5,6 +5,7 @@ import { ScheduleRepository } from './repository/schedules.repository';
 import { PlaceConfigurationRepository } from 'src/place-configurations/repository/place-configuration.repository';
 import { UserRepository } from 'src/users/repository/user.repository';
 import { EUserType } from 'src/users/entity/euser-type';
+import { EmailSenderService } from 'src/core/communication/email/email-sender.service';
 
 @Injectable()
 export class SchedulesService {
@@ -12,6 +13,7 @@ export class SchedulesService {
     private readonly schedulesRepository: ScheduleRepository,
     private readonly placeConfigurationsRepository: PlaceConfigurationRepository,
     private readonly userRepository: UserRepository,
+    private readonly emailSenderService: EmailSenderService,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto) {
@@ -34,20 +36,39 @@ export class SchedulesService {
 
     const schedule = Schedule.newSchedule(scheduleDto);
     await this.schedulesRepository.create(schedule);
+
+    const scheduleInDb = await this.schedulesRepository.findById(schedule.id);
+    const user = await this.userRepository.findById(scheduleDto.id_user_requested);
+    await this.emailSenderService.sendMail({
+      to: user.email,
+      subject: 'Agendamento realizado',
+      text: 'Seu agendamento foi realizado com sucesso',
+      body: scheduleInDb.getTemplate('agendado'),
+    });
+
     return schedule.toJSON();
   }
 
   async cancel(id_schedule: number, id_user_cancelled: number) {
     const schedule = await this.schedulesRepository.findById(id_schedule);
-    const user = await this.userRepository.findById(id_user_cancelled);
+    const user_cancelled = await this.userRepository.findById(id_user_cancelled);
     if (schedule.date_cancelled) return true;
 
-    if (schedule.id_user_requested !== id_user_cancelled && user.type !== EUserType.ADMIN) {
+    if (schedule.id_user_requested !== id_user_cancelled && user_cancelled.type !== EUserType.ADMIN) {
       throw new HttpException('Você não tem permissão para cancelar este agendamento', 403);
     }
 
     schedule.cancel(id_user_cancelled);
     await this.schedulesRepository.update(schedule);
+
+    const scheduleInDb = await this.schedulesRepository.findById(id_schedule);
+    const user_requested = await this.userRepository.findById(schedule.id_user_requested);
+    await this.emailSenderService.sendMail({
+      to: user_requested.email,
+      subject: 'Agendamento cancelado',
+      text: 'Seu agendamento foi cancelado com sucesso',
+      body: scheduleInDb.getTemplate('cancelado'),
+    });
 
     return true;
   }
