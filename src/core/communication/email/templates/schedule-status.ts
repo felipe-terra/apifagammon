@@ -5,6 +5,7 @@ export function scheduleStatusTemplate(
   data: string,
   horario: string,
   statusClass?: string,
+  motivo?: string,
 ) {
   return `
 <!DOCTYPE html>
@@ -68,6 +69,7 @@ export function scheduleStatusTemplate(
         <p><span class="label">Sala:</span> ${sala}</p>
         <p><span class="label">Data:</span> ${data}</p>
         <p><span class="label">Horário:</span> ${horario}</p>
+        ${motivo ? `<p><span class="label">Motivo:</span> ${motivo}</p>` : ''}
       </div>
     </div>
     <div class="footer">

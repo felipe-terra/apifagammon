@@ -6,6 +6,7 @@ import { PlaceConfigurationRepository } from 'src/place-configurations/repositor
 import { UserRepository } from 'src/users/repository/user.repository';
 import { EUserType } from 'src/users/entity/euser-type';
 import { EmailSenderService } from 'src/core/communication/email/email-sender.service';
+import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -49,16 +50,19 @@ export class SchedulesService {
     return schedule.toJSON();
   }
 
-  async cancel(id_schedule: number, id_user_cancelled: number) {
+  async cancel(id_schedule: number, scheduleDto: CancelSchedulesDto) {
     const schedule = await this.schedulesRepository.findById(id_schedule);
-    const user_cancelled = await this.userRepository.findById(id_user_cancelled);
+    const user_cancelled = await this.userRepository.findById(scheduleDto.id_user_cancelled);
     if (schedule.date_cancelled) return true;
 
-    if (schedule.id_user_requested !== id_user_cancelled && user_cancelled.type !== EUserType.ADMIN) {
+    if (
+      schedule.id_user_requested !== scheduleDto.id_user_cancelled &&
+      user_cancelled.type !== EUserType.ADMIN
+    ) {
       throw new HttpException('Você não tem permissão para cancelar este agendamento', 403);
     }
 
-    schedule.cancel(id_user_cancelled);
+    schedule.cancel(scheduleDto);
     await this.schedulesRepository.update(schedule);
 
     const scheduleInDb = await this.schedulesRepository.findById(id_schedule);
@@ -66,7 +70,7 @@ export class SchedulesService {
     await this.emailSenderService.sendMail({
       to: user_requested.email,
       subject: 'Agendamento cancelado',
-      text: 'Seu agendamento foi cancelado com sucesso',
+      text: 'Seu agendamento foi cancelado',
       body: scheduleInDb.getTemplate('cancelado'),
     });
 

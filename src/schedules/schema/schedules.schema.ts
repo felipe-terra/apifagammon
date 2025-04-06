@@ -46,6 +46,11 @@ export const SchedulesSchema = new EntitySchema<Schedule>({
       length: 255,
       nullable: false,
     },
+    cancelled_reason: {
+      type: 'varchar',
+      length: 255,
+      nullable: true,
+    },
   },
   relations: {
     user_requested: {

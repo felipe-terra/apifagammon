@@ -4,6 +4,7 @@ import { EScheduleStatus } from './eschedule-status';
 import { User } from 'src/users/entity/users';
 import { PlaceConfiguration } from 'src/place-configurations/entity/place-configurations';
 import { scheduleStatusTemplate } from 'src/core/communication/email/templates/schedule-status';
+import { CancelSchedulesDto } from '../dto/cancel-schedules.dto';
 export class Schedule implements Entity {
   id: number;
   id_user_requested: number;
@@ -17,6 +18,7 @@ export class Schedule implements Entity {
   user_cancelled: User;
   date_cancelled: Date;
   reason: string;
+  cancelled_reason: string;
 
   constructor(partial: Partial<Schedule>) {
     Object.assign(this, partial);
@@ -35,10 +37,11 @@ export class Schedule implements Entity {
     return schedule;
   }
 
-  cancel(id_user_cancelled: number) {
+  cancel(scheduleDto: CancelSchedulesDto) {
     this.status = EScheduleStatus.CANCELADO;
     this.date_cancelled = new Date();
-    this.id_user_cancelled = id_user_cancelled;
+    this.id_user_cancelled = scheduleDto.id_user_cancelled;
+    this.cancelled_reason = scheduleDto.reason;
   }
 
   getTemplate(type: 'cancelado' | 'agendado') {
@@ -66,6 +69,7 @@ export class Schedule implements Entity {
       this.date.toString().split('-').reverse().join('/'),
       `${this.place_configuration?.start_time.slice(0, 5)} - ${this.place_configuration?.end_time.slice(0, 5)}`,
       'cancelado',
+      this.cancelled_reason,
     );
   }
 
