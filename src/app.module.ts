@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { PlacesModule } from './places/places.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-
+import { GlobalBlockModule } from './global_block/global_block.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -25,6 +25,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     GlobalModule,
     AuthModule,
     SchedulesModule,
+    GlobalBlockModule,
   ],
   controllers: [AppController],
   providers: [AppService],

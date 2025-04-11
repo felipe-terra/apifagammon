@@ -10,6 +10,8 @@ import { Schedule } from './schedules/entity/schedules';
 import { PlaceConfigurationRepository } from './place-configurations/repository/place-configuration.repository';
 import { PlaceConfiguration } from './place-configurations/entity/place-configurations';
 import { EmailSenderService } from './core/communication/email/email-sender.service';
+import { GlobalBlockRepository } from './global_block/repository/global_block.repository';
+import { GlobalBlock } from './global_block/entity/global_block';
 
 const repositoryProviders: Provider[] = [
   {
@@ -36,6 +38,12 @@ const repositoryProviders: Provider[] = [
   {
     provide: EmailSenderService,
     useClass: EmailSenderService,
+  },
+  {
+  provide: GlobalBlockRepository,
+  useFactory: (dataSource: DataSource) =>
+  new GlobalBlockRepository(dataSource.getRepository(GlobalBlock)),
+  inject: [getDataSourceToken()],
   },
 ];
 

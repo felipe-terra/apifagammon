@@ -53,4 +53,15 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
       },
     });
   }
+
+
+  async isBlocked(placeId: number): Promise<boolean> {
+    const sql =
+      'SELECT COUNT(*) FROM global_blocks s WHERE id_place_configuration = $1';
+    const result = await this.repository.query(sql, [
+      placeId,
+    ]);
+    return result[0].count > 0;
+  }
+
 }
