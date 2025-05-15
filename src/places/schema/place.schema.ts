@@ -20,6 +20,15 @@ export const PlaceSchema = new EntitySchema<Place>({
       type: 'boolean',
       nullable: false,
     },
+    people_capacity: {
+      type: 'int',
+      nullable: false,
+    },
+    photo: {
+      type: 'varchar',
+      length: 255,
+      nullable: true,
+    },
   },
   relations: {
     place_configurations: {

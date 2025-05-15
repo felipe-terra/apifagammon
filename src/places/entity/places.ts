@@ -8,6 +8,8 @@ export class Place implements Entity {
   id: number;
   name: string;
   active: boolean;
+  people_capacity: number;
+  photo: string;
   place_configurations: PlaceConfiguration[];
 
   constructor(partial: Partial<Place>) {
@@ -20,6 +22,8 @@ export class Place implements Entity {
     const input: Partial<Place> = {
       name: data.name,
       active: data.active,
+      people_capacity: data.people_capacity,
+      photo: data.photo,
       place_configurations: this.createPlaceConfigurationsEntity(data.configurations),
     };
 
@@ -34,6 +38,8 @@ export class Place implements Entity {
       id: id,
       name: data.name,
       active: data.active,
+      people_capacity: data.people_capacity,
+      photo: data.photo,
       place_configurations: this.createPlaceConfigurationsEntity(data.configurations),
     };
     const place = new Place(input);
@@ -45,6 +51,8 @@ export class Place implements Entity {
       id: this.id,
       name: this.name,
       active: this.active,
+      people_capacity: this.people_capacity,
+      photo: this.photo,
       configurations: this.place_configurations?.map((configuration) => configuration.toJSON()) ?? [],
     };
   }

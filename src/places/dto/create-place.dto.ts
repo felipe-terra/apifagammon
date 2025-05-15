@@ -1,11 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsNotEmpty,
-  IsString,
-  MaxLength,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, ValidateNested } from 'class-validator';
 import { CreatePlaceConfigurationDto } from 'src/place-configurations/dto/create-place-configuration.dto';
 
 export class CreatePlaceDto {
@@ -30,4 +25,12 @@ export class CreatePlaceDto {
   @ValidateNested({ each: true })
   @Type(() => CreatePlaceConfigurationDto)
   configurations: CreatePlaceConfigurationDto[];
+
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 100,
+  })
+  people_capacity: number;
+
+  photo: string;
 }

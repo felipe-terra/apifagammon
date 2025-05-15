@@ -12,6 +12,7 @@ import { PlaceConfiguration } from './place-configurations/entity/place-configur
 import { EmailSenderService } from './core/communication/email/email-sender.service';
 import { GlobalBlockRepository } from './global_block/repository/global_block.repository';
 import { GlobalBlock } from './global_block/entity/global_block';
+import { FileManager } from './core/file-manager/file-manager';
 
 const repositoryProviders: Provider[] = [
   {
@@ -40,10 +41,13 @@ const repositoryProviders: Provider[] = [
     useClass: EmailSenderService,
   },
   {
-  provide: GlobalBlockRepository,
-  useFactory: (dataSource: DataSource) =>
-  new GlobalBlockRepository(dataSource.getRepository(GlobalBlock)),
-  inject: [getDataSourceToken()],
+    provide: FileManager,
+    useClass: FileManager,
+  },
+  {
+    provide: GlobalBlockRepository,
+    useFactory: (dataSource: DataSource) => new GlobalBlockRepository(dataSource.getRepository(GlobalBlock)),
+    inject: [getDataSourceToken()],
   },
 ];
 

@@ -7,12 +7,16 @@ import {
   Delete,
   Put,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt-strategy/jwt.guard';
 import { EDayOfWeek } from 'src/place-configurations/entity/eday-of-week';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiBearerAuth('JWT')
 @UseGuards(JwtGuard)
@@ -21,9 +25,26 @@ import { EDayOfWeek } from 'src/place-configurations/entity/eday-of-week';
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiBody({ type: CreatePlaceDto })
   @Post()
-  async Create(@Body() createPlaceDto: CreatePlaceDto) {
-    return await this.placesService.create(createPlaceDto);
+  async Create(
+    @Body() createPlaceDto: CreatePlaceDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpeg|png|webp|pdf)$/,
+        })
+        .addMaxSizeValidator({
+          maxSize: 100000000,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    photo?: Express.Multer.File,
+  ) {
+    return await this.placesService.create(createPlaceDto, photo);
   }
 
   @Get()
@@ -41,10 +62,7 @@ export class PlacesController {
     @Param('id_place') id_place: number,
     @Param('day_of_week') day_of_week: EDayOfWeek,
   ) {
-    return await this.placesService.getComboConfigurations(
-      id_place,
-      day_of_week,
-    );
+    return await this.placesService.getComboConfigurations(id_place, day_of_week);
   }
 
   @Get(':id')
@@ -52,12 +70,27 @@ export class PlacesController {
     return await this.placesService.findById(+id);
   }
 
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiBody({ type: CreatePlaceDto })
   @Put(':id')
   async Update(
     @Param('id') id: number,
     @Body() updatePlaceDto: CreatePlaceDto,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /(jpeg|png|webp|pdf)$/,
+        })
+        .addMaxSizeValidator({
+          maxSize: 100000000,
+        })
+        .build({
+          fileIsRequired: false,
+        }),
+    )
+    photo?: Express.Multer.File,
   ) {
-    return this.placesService.update(+id, updatePlaceDto);
+    return this.placesService.update(+id, updatePlaceDto, photo);
   }
 
   @Delete(':id')

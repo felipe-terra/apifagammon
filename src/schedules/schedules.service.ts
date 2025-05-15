@@ -35,14 +35,10 @@ export class SchedulesService {
       throw new HttpException('A data do agendamento deve ser maior que a data atual', 400);
     }
 
-    const block = await this.schedulesRepository.isBlocked(
-      scheduleDto.id_place_configuration,
-    )
+    const block = await this.schedulesRepository.isBlocked(scheduleDto.id_place_configuration);
     if (block) {
       throw new HttpException('Esse local está bloqueado', 400);
     }
-
-    
 
     const schedule = Schedule.newSchedule(scheduleDto);
     await this.schedulesRepository.create(schedule);
