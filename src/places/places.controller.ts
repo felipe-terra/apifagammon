@@ -10,6 +10,8 @@ import {
   UseInterceptors,
   UploadedFile,
   ParseFilePipeBuilder,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { PlacesService } from './places.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
@@ -26,6 +28,7 @@ export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
   @UseInterceptors(FileInterceptor('photo'))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiBody({ type: CreatePlaceDto })
   @Post()
   async Create(
@@ -33,7 +36,7 @@ export class PlacesController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: /(jpeg|png|webp|pdf)$/,
+          fileType: /(jpeg|png|webp)$/,
         })
         .addMaxSizeValidator({
           maxSize: 100000000,
@@ -71,6 +74,7 @@ export class PlacesController {
   }
 
   @UseInterceptors(FileInterceptor('photo'))
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiBody({ type: CreatePlaceDto })
   @Put(':id')
   async Update(
@@ -79,7 +83,7 @@ export class PlacesController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: /(jpeg|png|webp|pdf)$/,
+          fileType: /(jpeg|png|webp)$/,
         })
         .addMaxSizeValidator({
           maxSize: 100000000,

@@ -36,6 +36,7 @@ export const PlaceSchema = new EntitySchema<Place>({
       target: 'place_configurations',
       inverseSide: 'place',
       cascade: ['insert', 'update', 'remove'],
+      onDelete: 'CASCADE',
     },
   },
 });
