@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repository/user.repository';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EUserType } from './entity/euser-type';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,11 +37,26 @@ export class UsersService {
     return user.toJSON();
   }
 
+  async updatePassword(updatePasswordDto: UpdatePasswordDto) {
+    const user = await this.userRepository.findById(updatePasswordDto.user_id);
+    const response = user.updatePassword(
+      updatePasswordDto.current_password,
+      updatePasswordDto.new_password,
+      updatePasswordDto.confirm_password,
+    );
+    if (!response.success) {
+      throw new HttpException(response.message, 400);
+    }
+
+    await this.userRepository.update(user);
+  }
+
   async delete(id: number) {
     await this.userRepository.delete(id);
   }
 
-  getPermissions(userType: EUserType) {
-    return User.getPermissions(userType);
+  async getPermissions(userType: EUserType, userId: number) {
+    const user = await this.userRepository.findById(userId);
+    return user.getPermissions(userType);
   }
 }

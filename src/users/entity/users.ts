@@ -32,14 +32,10 @@ export class User implements Entity {
   }
 
   static newUserWithId(id: number, data: UpdateUserDto): User {
-    if (data.password) {
-      data.password = bcrypt.hashSync(data.password, 8);
-    }
     const input: Partial<User> = {
       id: id,
       name: data.name,
       email: data.email,
-      password: data.password,
       type: data.type,
       active: data.active,
     };
@@ -47,9 +43,52 @@ export class User implements Entity {
     return user;
   }
 
-  static getPermissions(userType: EUserType) {
+  getPermissions(userType: EUserType) {
     if (userType === EUserType.ADMIN) {
-      return [
+      return {
+        user_name: this.name,
+        permissions: [
+          {
+            name: 'Home',
+            screens: [
+              {
+                name: 'Home',
+                path: './home.html',
+                icon: 'ti ti-home',
+              },
+            ],
+          },
+          {
+            name: 'Cadastros',
+            screens: [
+              {
+                name: 'Ambientes',
+                path: './ambientes.html',
+                icon: 'ti ti-map-pins',
+              },
+              {
+                name: 'Usuários',
+                path: './usuarios.html',
+                icon: 'ti ti-users',
+              },
+            ],
+          },
+          {
+            name: 'Agendamentos',
+            screens: [
+              {
+                name: 'Agendamento',
+                path: './visualizar_agendamentos.html',
+                icon: 'ti ti-map-pins',
+              },
+            ],
+          },
+        ],
+      };
+    }
+    return {
+      user_name: this.name,
+      permissions: [
         {
           name: 'Home',
           screens: [
@@ -61,54 +100,42 @@ export class User implements Entity {
           ],
         },
         {
-          name: 'Cadastros',
-          screens: [
-            {
-              name: 'Ambientes',
-              path: './ambientes.html',
-              icon: 'ti ti-map-pins',
-            },
-            {
-              name: 'Usuários',
-              path: './usuarios.html',
-              icon: 'ti ti-users',
-            },
-          ],
-        },
-        {
           name: 'Agendamentos',
           screens: [
             {
               name: 'Agendamento',
-              path: './visualizar_agendamentos.html',
+              path: './agendamento.html',
               icon: 'ti ti-map-pins',
             },
           ],
         },
-      ];
+      ],
+    };
+  }
+
+  updatePassword(
+    current_password: string,
+    new_password: string,
+    confirm_password: string,
+  ): { success: boolean; message: string } {
+    if (!bcrypt.compareSync(current_password, this.password)) {
+      return {
+        success: false,
+        message: 'Senha atual inválida',
+      };
     }
-    return [
-      {
-        name: 'Home',
-        screens: [
-          {
-            name: 'Home',
-            path: './home.html',
-            icon: 'ti ti-home',
-          },
-        ],
-      },
-      {
-        name: 'Agendamentos',
-        screens: [
-          {
-            name: 'Agendamento',
-            path: './agendamento.html',
-            icon: 'ti ti-map-pins',
-          },
-        ],
-      },
-    ];
+    if (new_password !== confirm_password) {
+      return {
+        success: false,
+        message: 'As senhas não conferem',
+      };
+    }
+    this.password = bcrypt.hashSync(new_password, 8);
+
+    return {
+      success: true,
+      message: 'Senha atualizada com sucesso',
+    };
   }
 
   toJSON() {

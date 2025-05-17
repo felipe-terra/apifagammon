@@ -1,12 +1,4 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 import { EUserType } from '../entity/euser-type';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -29,11 +21,6 @@ export class UpdateUserDto {
   @ApiProperty({
     example: 'password123',
   })
-  @IsOptional()
-  @MaxLength(100)
-  @MinLength(6)
-  @IsString()
-  password: string;
   @ApiProperty({
     example: EUserType.USER,
   })
