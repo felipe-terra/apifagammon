@@ -15,6 +15,10 @@ export class UserRepository extends GenericRepository<User> {
     return await this.repository.findOne({ where: { email } });
   }
 
+  async findByToken(token: string) {
+    return await this.repository.findOne({ where: { validate_token: token } });
+  }
+
   async emailAlreadyExists(email: string, id?: number) {
     let sql = `SELECT COUNT(*) FROM users WHERE email = $1`;
     const params: any = [email];

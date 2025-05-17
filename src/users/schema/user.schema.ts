@@ -40,5 +40,14 @@ export const UsersSchema = new EntitySchema<User>({
       type: 'timestamp',
       nullable: false,
     },
+    validate_token: {
+      type: 'varchar',
+      length: 100,
+      nullable: true,
+    },
+    validate_token_expiration: {
+      type: 'timestamp',
+      nullable: true,
+    },
   },
 });

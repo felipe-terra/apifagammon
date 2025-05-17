@@ -11,6 +11,8 @@ export class User implements Entity {
   password: string;
   type: EUserType;
   active: boolean;
+  validate_token: string;
+  validate_token_expiration: Date;
   created_at: Date;
 
   constructor(partial: Partial<User>) {
@@ -138,6 +140,36 @@ export class User implements Entity {
     };
   }
 
+  forgotPassword() {
+    this.validate_token = this.generateToken();
+    this.validate_token_expiration = new Date(Date.now() + 60 * 60 * 1000);
+  }
+
+  defineNewPassword(new_password: string, confirm_password: string): { success: boolean; message: string } {
+    if (new_password !== confirm_password) {
+      return {
+        success: false,
+        message: 'As senhas não conferem',
+      };
+    }
+
+    if (this.validate_token_expiration < new Date()) {
+      return {
+        success: false,
+        message: 'Token expirado',
+      };
+    }
+
+    this.password = bcrypt.hashSync(new_password, 8);
+    this.validate_token = null;
+    this.validate_token_expiration = null;
+
+    return {
+      success: true,
+      message: 'Senha atualizada com sucesso',
+    };
+  }
+
   toJSON() {
     return {
       id: this.id,
@@ -152,5 +184,15 @@ export class User implements Entity {
     return {
       name: this.name,
     };
+  }
+
+  private generateToken(resultLength: number = 100): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < resultLength; i++) {
+      const index = Math.floor(Math.random() * characters.length);
+      result += characters[index];
+    }
+    return result;
   }
 }
