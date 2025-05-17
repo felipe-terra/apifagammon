@@ -3,6 +3,8 @@ import { FindOptionsOrder, Repository } from 'typeorm';
 import { Schedule } from '../entity/schedules';
 import { Injectable } from '@nestjs/common';
 import { EScheduleStatus } from '../entity/eschedule-status';
+import { RequestPaginationDto } from 'src/core/dto/request-pagination.dto';
+import { ResponsePaginationDto } from 'src/core/dto/response-pagination.dto';
 
 @Injectable()
 export class ScheduleRepository extends GenericRepository<Schedule> {
@@ -43,8 +45,13 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
     });
   }
 
-  async findAllPublic(): Promise<Schedule[]> {
-    return this.repository.find({
+  async findAllPublic(props: RequestPaginationDto): Promise<ResponsePaginationDto<Schedule>> {
+    if (!props.page || props.page < 0) props.page = 0;
+    if (!props.recordsPerPage || props.recordsPerPage < 10) props.recordsPerPage = 10;
+
+    const data = await this.repository.find({
+      skip: +props.page * +props.recordsPerPage,
+      take: +props.recordsPerPage,
       order: this.order,
       relations: this.relations,
       loadEagerRelations: this.relationEager,
@@ -52,6 +59,17 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
         status: EScheduleStatus.AGENDADO,
       },
     });
+
+    const totalRecords = await this.repository.count({
+      where: {
+        status: EScheduleStatus.AGENDADO,
+      },
+    });
+
+    return {
+      data: data,
+      totalRecords: totalRecords,
+    };
   }
 
   async isBlocked(placeId: number): Promise<boolean> {

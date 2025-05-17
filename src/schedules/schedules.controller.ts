@@ -1,8 +1,8 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtGuard } from 'src/auth/jwt-strategy/jwt.guard';
 import { CreateSchedulesDto } from './dto/create-schedules.dto';
 import { SchedulesService } from './schedules.service';
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
 
@@ -41,8 +41,10 @@ export class SchedulesController {
     return this.schedulesService.findAll();
   }
 
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'recordsPerPage', required: false })
   @Get('public')
-  async findAllPublic() {
-    return this.schedulesService.findAllPublic();
+  async findAllPublic(@Query('page') page: number, @Query('recordsPerPage') recordsPerPage: number) {
+    return this.schedulesService.findAllPublic({ page, recordsPerPage });
   }
 }
