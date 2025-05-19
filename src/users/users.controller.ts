@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Req, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Req, Patch, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -8,6 +8,7 @@ import { EUserType } from './entity/euser-type';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { DefineNewPasswordDto } from './dto/define-new-password.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -73,5 +74,11 @@ export class UsersController {
   async DefineNewPassword(@Param('token') token: string, @Body() props: DefineNewPasswordDto) {
     props.token = token;
     return this.usersService.defineNewPassword(props);
+  }
+
+  @Post('import-csv')
+  @UseInterceptors(FileInterceptor('file'))
+  async importCsv(@UploadedFile() file: Express.Multer.File) {
+    return await this.usersService.importFromCsv(file.buffer);
   }
 }

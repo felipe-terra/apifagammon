@@ -9,6 +9,7 @@ import { EmailSenderService } from 'src/core/communication/email/email-sender.se
 import { getForgotPasswordTemplate } from 'src/core/communication/email/templates/forgot-password';
 import { forgotPasswordDto } from './dto/forgot-password.dto';
 import { DefineNewPasswordDto } from './dto/define-new-password.dto';
+import { parse } from 'csv-parse/sync';
 
 @Injectable()
 export class UsersService {
@@ -92,5 +93,72 @@ export class UsersService {
     }
 
     await this.userRepository.update(user);
+  }
+
+  async importFromCsv(buffer: Buffer): Promise<any> {
+    const content = buffer.toString('utf-8');
+    const records = parse(content, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+    });
+    const processed = [];
+    for (const record of records) {
+      try {
+        const name = record['nome'];
+        const email = record['email'];
+        if (!name || !email) {
+          processed.push({
+            name: name || '',
+            email: email || '',
+            success: false,
+            message: 'Nome e email são obrigatórios',
+          });
+          continue;
+        }
+        if (!email.includes('@')) {
+          processed.push({
+            name, 
+            email,
+            success: false,
+            message: 'Email inválido',
+          });
+          continue;
+        }
+        const userDto: CreateUserDto = {
+          name,
+          email,
+          password: "123456",
+          type: EUserType.USER,
+          active: true,
+        };
+        try {
+          const createdUser = await this.create(userDto);
+          processed.push({
+            name: createdUser.name,
+            email: createdUser.email,
+            success: true,
+          });
+        } catch (error) {
+          processed.push({
+            name,
+            email,
+            success: false,
+            message: error.message,
+          });
+        }
+      } catch (error) {
+        processed.push({
+          name: record['nome'] || '',
+          email: record['email'] || '',
+          success: false,
+          message: error.message,
+        });
+      }
+    }
+    const successCount = processed.filter(p => p.success).length;
+    return {
+      message: `${successCount} usuários registrados com sucesso.`,
+    };
   }
 }
