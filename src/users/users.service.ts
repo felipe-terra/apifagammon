@@ -96,7 +96,8 @@ export class UsersService {
   }
 
   async importFromCsv(buffer: Buffer): Promise<any> {
-    const content = buffer.toString('utf-8');
+    const content = buffer.toString('utf-8').replace(/;/g, ',');
+
     const records = parse(content, {
       columns: true,
       skip_empty_lines: true,
@@ -118,7 +119,7 @@ export class UsersService {
         }
         if (!email.includes('@')) {
           processed.push({
-            name, 
+            name,
             email,
             success: false,
             message: 'Email inválido',
@@ -128,7 +129,7 @@ export class UsersService {
         const userDto: CreateUserDto = {
           name,
           email,
-          password: "123456",
+          password: '123456',
           type: EUserType.USER,
           active: true,
         };
@@ -156,7 +157,7 @@ export class UsersService {
         });
       }
     }
-    const successCount = processed.filter(p => p.success).length;
+    const successCount = processed.filter((p) => p.success).length;
     return {
       message: `${successCount} usuários registrados com sucesso.`,
     };
