@@ -51,6 +51,10 @@ export const SchedulesSchema = new EntitySchema<Schedule>({
       length: 255,
       nullable: true,
     },
+    is_public: {
+      type: 'boolean',
+      nullable: false,
+    },
   },
   relations: {
     user_requested: {

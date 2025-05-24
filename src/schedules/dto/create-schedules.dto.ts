@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsString } from 'class-validator';
 import { IsNumber } from 'class-validator';
 import { IsNotEmpty } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -28,4 +28,12 @@ export class CreateSchedulesDto {
   @IsString()
   @IsNotEmpty()
   reason: string;
+
+  @ApiProperty({
+    example: 'false',
+    description: 'Is the schedule public?',
+  })
+  @IsNotEmpty()
+  @IsBoolean()
+  is_public: boolean;
 }

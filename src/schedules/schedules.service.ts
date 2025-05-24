@@ -8,6 +8,7 @@ import { EUserType } from 'src/users/entity/euser-type';
 import { EmailSenderService } from 'src/core/communication/email/email-sender.service';
 import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
 import { RequestPaginationDto } from 'src/core/dto/request-pagination.dto';
+import { FilterDto } from 'src/core/dto/filter.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -93,8 +94,8 @@ export class SchedulesService {
     return data.map((item) => item.toAdminJSON());
   }
 
-  async findAllPublic(props: RequestPaginationDto) {
-    const data = await this.schedulesRepository.findAllPublic(props);
+  async findAllPublic(props: RequestPaginationDto, filter: FilterDto[]) {
+    const data = await this.schedulesRepository.findAllPublic(props, filter);
     return {
       data: data.data.map((item) => item.toPublicJSON()),
       totalRecords: data.totalRecords,

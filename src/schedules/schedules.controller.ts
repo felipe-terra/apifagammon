@@ -5,6 +5,7 @@ import { SchedulesService } from './schedules.service';
 import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
+import { FilterDto } from 'src/core/dto/filter.dto';
 
 @ApiTags('Schedules')
 @Controller('schedules')
@@ -43,8 +44,13 @@ export class SchedulesController {
 
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'recordsPerPage', required: false })
+  @ApiQuery({ name: 'filter', required: false })
   @Get('public')
-  async findAllPublic(@Query('page') page: number, @Query('recordsPerPage') recordsPerPage: number) {
-    return this.schedulesService.findAllPublic({ page, recordsPerPage });
+  async findAllPublic(
+    @Query('page') page: number,
+    @Query('recordsPerPage') recordsPerPage: number,
+    @Query('filter') filter: FilterDto[],
+  ) {
+    return this.schedulesService.findAllPublic({ page, recordsPerPage }, filter);
   }
 }

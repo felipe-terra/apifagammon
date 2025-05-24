@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { EScheduleStatus } from '../entity/eschedule-status';
 import { RequestPaginationDto } from 'src/core/dto/request-pagination.dto';
 import { ResponsePaginationDto } from 'src/core/dto/response-pagination.dto';
+import { FilterDto } from 'src/core/dto/filter.dto';
+import { filterBuilder } from 'src/core/repository/filter-builder';
 
 @Injectable()
 export class ScheduleRepository extends GenericRepository<Schedule> {
@@ -45,9 +47,22 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
     });
   }
 
-  async findAllPublic(props: RequestPaginationDto): Promise<ResponsePaginationDto<Schedule>> {
+  async findAllPublic(
+    props: RequestPaginationDto,
+    filter: FilterDto[],
+  ): Promise<ResponsePaginationDto<Schedule>> {
     if (!props.page || props.page < 0) props.page = 0;
     if (!props.recordsPerPage || props.recordsPerPage < 10) props.recordsPerPage = 10;
+
+    let where: any = {
+      status: EScheduleStatus.AGENDADO,
+    };
+    if (filter && filter.length > 0) {
+      where = {
+        ...where,
+        ...filterBuilder(filter),
+      };
+    }
 
     const data = await this.repository.find({
       skip: +props.page * +props.recordsPerPage,
@@ -55,15 +70,11 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
       order: this.order,
       relations: this.relations,
       loadEagerRelations: this.relationEager,
-      where: {
-        status: EScheduleStatus.AGENDADO,
-      },
+      where: where,
     });
 
     const totalRecords = await this.repository.count({
-      where: {
-        status: EScheduleStatus.AGENDADO,
-      },
+      where: where,
     });
 
     return {

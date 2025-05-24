@@ -19,6 +19,7 @@ export class Schedule implements Entity {
   date_cancelled: Date;
   reason: string;
   cancelled_reason: string;
+  is_public: boolean;
 
   constructor(partial: Partial<Schedule>) {
     Object.assign(this, partial);
@@ -32,6 +33,7 @@ export class Schedule implements Entity {
       created_at: new Date(),
       status: EScheduleStatus.AGENDADO,
       reason: data.reason,
+      is_public: data.is_public,
     };
     const schedule = new Schedule(input);
     return schedule;
@@ -79,6 +81,7 @@ export class Schedule implements Entity {
       date: this.date,
       status: this.status,
       reason: this.reason,
+      is_public: this.is_public,
       place_configuration: this.place_configuration?.toJSON(),
     };
   }
@@ -89,6 +92,7 @@ export class Schedule implements Entity {
       date: this.date,
       status: this.status,
       reason: this.reason,
+      is_public: this.is_public,
       place_configuration: this.place_configuration?.toJSON(),
       user_requested: this.user_requested?.toJSON(),
     };
@@ -96,8 +100,10 @@ export class Schedule implements Entity {
 
   toPublicJSON() {
     return {
+      id: this.id,
       date: this.date,
       reason: this.reason,
+      is_public: this.is_public,
       place_configuration: this.place_configuration?.toPublicJSON(),
       user_requested: this.user_requested?.toPublicJSON(),
     };
