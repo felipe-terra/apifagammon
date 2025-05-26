@@ -6,6 +6,7 @@ import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
 import { FilterDto } from 'src/core/dto/filter.dto';
+import { SubscribeSchedulesDto } from './dto/subscribe-schedules.dto';
 
 @ApiTags('Schedules')
 @Controller('schedules')
@@ -40,6 +41,12 @@ export class SchedulesController {
   @Get()
   async findAll() {
     return this.schedulesService.findAll();
+  }
+
+
+  @Post('subscribe')
+  async subscribe(@Body() subscribeDto: SubscribeSchedulesDto) {
+    return this.schedulesService.subscribe(subscribeDto);
   }
 
   @ApiQuery({ name: 'page', required: false })

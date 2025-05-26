@@ -13,6 +13,8 @@ import { EmailSenderService } from './core/communication/email/email-sender.serv
 import { GlobalBlockRepository } from './global_block/repository/global_block.repository';
 import { GlobalBlock } from './global_block/entity/global_block';
 import { FileManager } from './core/file-manager/file-manager';
+import { ScheduleSubscriptionRepository } from './schedules/repository/schedule-subscription.repository';
+import { ScheduleSubscription } from './schedules/entity/schedule-subscription';
 
 const repositoryProviders: Provider[] = [
   {
@@ -28,6 +30,12 @@ const repositoryProviders: Provider[] = [
   {
     provide: ScheduleRepository,
     useFactory: (dataSource: DataSource) => new ScheduleRepository(dataSource.getRepository(Schedule)),
+    inject: [getDataSourceToken()],
+  },
+  {
+    provide: ScheduleSubscriptionRepository,
+    useFactory: (dataSource: DataSource) =>
+      new ScheduleSubscriptionRepository(dataSource.getRepository(ScheduleSubscription)),
     inject: [getDataSourceToken()],
   },
   {

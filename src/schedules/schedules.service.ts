@@ -9,6 +9,9 @@ import { EmailSenderService } from 'src/core/communication/email/email-sender.se
 import { CancelSchedulesDto } from './dto/cancel-schedules.dto';
 import { RequestPaginationDto } from 'src/core/dto/request-pagination.dto';
 import { FilterDto } from 'src/core/dto/filter.dto';
+import { ScheduleSubscription } from './entity/schedule-subscription';
+import { ScheduleSubscriptionRepository } from './repository/schedule-subscription.repository';
+import { SubscribeSchedulesDto } from './dto/subscribe-schedules.dto';
 
 @Injectable()
 export class SchedulesService {
@@ -17,6 +20,7 @@ export class SchedulesService {
     private readonly placeConfigurationsRepository: PlaceConfigurationRepository,
     private readonly userRepository: UserRepository,
     private readonly emailSenderService: EmailSenderService,
+    private readonly subscriptionRepository: ScheduleSubscriptionRepository,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto) {
@@ -99,6 +103,50 @@ export class SchedulesService {
     return {
       data: data.data.map((item) => item.toPublicJSON()),
       totalRecords: data.totalRecords,
+    };
+  }
+
+  async subscribe(subscribeDto: SubscribeSchedulesDto) {
+    const schedule = await this.schedulesRepository.findById(subscribeDto.id_schedule);
+    if (!schedule) {
+      throw new HttpException('Agendamento não encontrado', 404);
+    }
+
+    if (!schedule.is_public) {
+      throw new HttpException('Este agendamento não está disponível para inscrições públicas', 400);
+    }
+
+    if (schedule.status !== 'AGENDADO') {
+      throw new HttpException('Este agendamento não está mais disponível', 400);
+    }
+
+    const existingSubscription = await this.subscriptionRepository.findByEmailAndSchedule(
+      subscribeDto.email,
+      subscribeDto.id_schedule,
+    );
+    if (existingSubscription) {
+      throw new HttpException('Você já está inscrito neste agendamento', 400);
+    }
+
+    const now = new Date();
+    const scheduleDate = new Date(schedule.date + ' ' + schedule.place_configuration.start_time);
+    
+    if (scheduleDate < now) {
+      throw new HttpException('Este agendamento já passou', 400);
+    }
+
+    const subscription = ScheduleSubscription.newSubscription(subscribeDto);
+    await this.subscriptionRepository.create(subscription);
+
+    return {
+      message: 'Inscrição realizada com sucesso',
+      subscription_id: subscription.id,
+      schedule_id: schedule.id,
+      subscriber: {
+        name: subscribeDto.name,
+        email: subscribeDto.email,
+        phone: subscribeDto.phone
+      }
     };
   }
 }
