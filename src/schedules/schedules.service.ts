@@ -12,6 +12,8 @@ import { FilterDto } from 'src/core/dto/filter.dto';
 import { ScheduleSubscription } from './entity/schedule-subscription';
 import { ScheduleSubscriptionRepository } from './repository/schedule-subscription.repository';
 import { SubscribeSchedulesDto } from './dto/subscribe-schedules.dto';
+import { FileManager } from 'src/core/file-manager/file-manager';
+import { promises as pfs } from 'fs';
 
 @Injectable()
 export class SchedulesService {
@@ -21,6 +23,7 @@ export class SchedulesService {
     private readonly userRepository: UserRepository,
     private readonly emailSenderService: EmailSenderService,
     private readonly subscriptionRepository: ScheduleSubscriptionRepository,
+    private readonly fileManager: FileManager,
   ) {}
 
   async create(scheduleDto: CreateSchedulesDto) {
@@ -130,7 +133,7 @@ export class SchedulesService {
 
     const now = new Date();
     const scheduleDate = new Date(schedule.date + ' ' + schedule.place_configuration.start_time);
-    
+
     if (scheduleDate < now) {
       throw new HttpException('Este agendamento já passou', 400);
     }
@@ -145,8 +148,32 @@ export class SchedulesService {
       subscriber: {
         name: subscribeDto.name,
         email: subscribeDto.email,
-        phone: subscribeDto.phone
-      }
+        phone: subscribeDto.phone,
+      },
+    };
+  }
+
+  async downloadAllSubscriptionsBySchedule(id_schedule: number, userId: number) {
+    const schedule = await this.schedulesRepository.findById(id_schedule);
+    const user = await this.userRepository.findById(userId);
+    if (
+      schedule.id_user_requested !== userId &&
+      schedule.status !== 'AGENDADO' &&
+      user.type !== EUserType.ADMIN
+    ) {
+      throw new HttpException('Você não tem permissão para acessar as inscrições deste agendamento', 403);
+    }
+
+    const subscriptions = await this.subscriptionRepository.findByScheduleId(id_schedule);
+    const csvData = ScheduleSubscription.toCsv(subscriptions);
+
+    await pfs.writeFile('./files/csv/incricoes.csv', csvData);
+    const baseb4 = await this.fileManager.FileToBase64('csv/incricoes.csv');
+    await this.fileManager.DeleteFile('csv/incricoes.csv');
+
+    return {
+      file: baseb4,
+      filename: `inscricoes-${schedule.id}-${new Date().toISOString()}.csv`,
     };
   }
 }

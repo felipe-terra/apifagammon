@@ -43,7 +43,6 @@ export class SchedulesController {
     return this.schedulesService.findAll();
   }
 
-
   @Post('subscribe')
   async subscribe(@Body() subscribeDto: SubscribeSchedulesDto) {
     return this.schedulesService.subscribe(subscribeDto);
@@ -59,5 +58,12 @@ export class SchedulesController {
     @Query('filter') filter: FilterDto[],
   ) {
     return this.schedulesService.findAllPublic({ page, recordsPerPage }, filter);
+  }
+
+  @ApiBearerAuth('JWT')
+  @UseGuards(JwtGuard)
+  @Get('export/:id')
+  async exportScheduleById(@Param('id') id: number, @Req() request: any) {
+    return this.schedulesService.downloadAllSubscriptionsBySchedule(id, request.user.sub);
   }
 }

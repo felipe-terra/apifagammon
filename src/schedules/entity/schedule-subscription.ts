@@ -32,19 +32,16 @@ export class ScheduleSubscription implements Entity {
     return new ScheduleSubscription(input);
   }
 
-  cancel() {
-    this.status = 'CANCELLED';
-  }
-
-  toJSON() {
-    return {
-      id: this.id,
-      id_schedule: this.id_schedule,
-      name: this.name,
-      email: this.email,
-      phone: this.phone,
-      subscribed_at: this.subscribed_at,
-      status: this.status,
-    };
+  static toCsv(subscriptions: ScheduleSubscription[]) {
+    const header = ['Nome', 'Email', 'Telefone'];
+    const registers = subscriptions.map((s) => [
+      s.name
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '')
+        .replace(/[^\p{L}\p{N}\s]/gu, ''),
+      s.email,
+      s.phone,
+    ]);
+    return [header, ...registers].map((linha) => linha.join(';')).join('\n');
   }
 }
