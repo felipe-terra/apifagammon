@@ -20,6 +20,7 @@ export class Schedule implements Entity {
   reason: string;
   cancelled_reason: string;
   is_public: boolean;
+  already_notified: boolean;
 
   constructor(partial: Partial<Schedule>) {
     Object.assign(this, partial);
@@ -34,6 +35,7 @@ export class Schedule implements Entity {
       status: EScheduleStatus.AGENDADO,
       reason: data.reason,
       is_public: data.is_public,
+      already_notified: false,
     };
     const schedule = new Schedule(input);
     return schedule;

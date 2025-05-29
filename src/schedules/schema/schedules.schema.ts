@@ -55,6 +55,10 @@ export const SchedulesSchema = new EntitySchema<Schedule>({
       type: 'boolean',
       nullable: false,
     },
+    already_notified: {
+      type: 'boolean',
+      nullable: false,
+    },
   },
   relations: {
     user_requested: {

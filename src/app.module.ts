@@ -11,6 +11,8 @@ import { PlacesModule } from './places/places.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { GlobalBlockModule } from './global_block/global_block.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotifyUserService } from './core/jobs/notify-user.service';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -19,6 +21,7 @@ import { GlobalBlockModule } from './global_block/global_block.module';
         name: 'default',
       },
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(dataSourceOptions),
     UsersModule,
     PlacesModule,
@@ -28,6 +31,6 @@ import { GlobalBlockModule } from './global_block/global_block.module';
     GlobalBlockModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NotifyUserService],
 })
 export class AppModule {}

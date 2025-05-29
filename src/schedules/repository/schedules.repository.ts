@@ -1,5 +1,5 @@
 import { GenericRepository } from 'src/core/repository/generic.repository';
-import { FindOptionsOrder, Repository } from 'typeorm';
+import { Equal, FindOptionsOrder, IsNull, Repository } from 'typeorm';
 import { Schedule } from '../entity/schedules';
 import { Injectable } from '@nestjs/common';
 import { EScheduleStatus } from '../entity/eschedule-status';
@@ -87,5 +87,22 @@ export class ScheduleRepository extends GenericRepository<Schedule> {
     const sql = 'SELECT COUNT(*) FROM global_blocks s WHERE id_place_configuration = $1';
     const result = await this.repository.query(sql, [placeId]);
     return result[0].count > 0;
+  }
+
+  async findAllToday(): Promise<Schedule[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return this.repository.find({
+      where: {
+        date: Equal(today),
+        date_cancelled: IsNull(),
+        already_notified: false,
+        status: EScheduleStatus.AGENDADO,
+      },
+      order: this.order,
+      relations: this.relations,
+      loadEagerRelations: this.relationEager,
+    });
   }
 }
