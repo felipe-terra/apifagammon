@@ -1,73 +1,110 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# 📅 API de Agendamentos Fagammon
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Uma API robusta para sistema de agendamentos desenvolvida com NestJS, TypeORM e PostgreSQL. O sistema permite gerenciar usuários, locais e agendamentos com autenticação JWT e documentação Swagger.
 
-## Description
+## 🚀 Tecnologias
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **[NestJS](https://nestjs.com/)** - Framework Node.js progressivo
+- **[TypeORM](https://typeorm.io/)** - ORM para TypeScript e JavaScript
+- **[PostgreSQL](https://www.postgresql.org/)** - Banco de dados relacional
+- **[JWT](https://jwt.io/)** - Autenticação e autorização
+- **[Swagger](https://swagger.io/)** - Documentação da API
+- **[Bcrypt](https://www.npmjs.com/package/bcrypt)** - Hash de senhas
+- **[Multer](https://www.npmjs.com/package/multer)** - Upload de arquivos
 
-## Installation
+## 📋 Funcionalidades
 
+### 🔐 Autenticação
+- Login com email e senha
+- Autenticação JWT
+- Recuperação de senha
+- Redefinição de senha
+
+### 👥 Gestão de Usuários
+- Cadastro de usuários (Admin/Comum)
+- Listagem e busca de usuários
+- Atualização de perfil
+- Sistema de permissões baseado em roles
+- Upload de foto de perfil
+
+### 🏢 Gestão de Locais
+- Cadastro de ambientes/locais
+- Upload de fotos dos locais
+- Configuração de horários disponíveis
+- Listagem e busca de locais
+
+### 📅 Sistema de Agendamentos
+- Criação de agendamentos
+- Visualização de agendamentos públicos
+- Cancelamento de agendamentos
+- Sistema de inscrições
+- Bloqueios globais de horários
+- Filtros e paginação
+
+## 🛠️ Instalação
+
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- PostgreSQL
+- npm ou yarn
+
+### Configuração
+
+1. **Clone o repositório**
 ```bash
-$ npm install
+git clone <url-do-repositorio>
+cd apifagammon
 ```
 
-## Running the app
-
+2. **Instale as dependências**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Test
-
+3. **Configure as variáveis de ambiente**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+cp .env.example .env
 ```
 
-## Support
+Configure as seguintes variáveis no arquivo `.env`:
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=seu_usuario
+DB_PASSWORD=sua_senha
+DB_DATABASE=fagammon_db
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# JWT
+JWT_SECRET=seu_jwt_secret_muito_seguro
 
-## Stay in touch
+# Email (para recuperação de senha)
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=seu_email@gmail.com
+MAIL_PASS=sua_senha_app
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+4. **Execute as migrações**
+```bash
+npm run migration:run
+```
 
-## License
+## 🚀 Execução
 
-Nest is [MIT licensed](LICENSE).
+### Desenvolvimento
+```bash
+npm run start:dev
+```
+
+### Produção
+```bash
+npm run build
+npm run start:prod
+```
+
+A API estará disponível em `http://localhost:3000`
